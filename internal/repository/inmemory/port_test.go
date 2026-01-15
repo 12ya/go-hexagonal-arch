@@ -70,7 +70,18 @@ func newTestStorePort(t *testing.T) *Port {
 
 func newTestDomainPort(t *testing.T) *domain.Port {
 	t.Helper()
-	port, err := domain.NewPort(testString, testString, testString, testString, testString, []string{testString}, []string{testString}, []float64{1.0, 2.0}, testString, testString, []string{testString})
+	port, err := domain.NewPort(testString,
+		testString,
+		testString,
+		testString,
+		testString,
+		[]string{testString},
+		[]string{testString},
+		[]float64{1.0, 2.0},
+		testString,
+		testString,
+		[]string{testString})
+
 	require.NoError(t, err)
 	return port
 }
