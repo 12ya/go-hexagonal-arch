@@ -16,7 +16,18 @@ type Port struct {
 	unlocs      []string
 }
 
-func NewPort(id, name, code, city, country string, alias, regions []string, coordinates []float64, province, timezone string, unlocs []string) (*Port, error) {
+func NewPort(
+	id,
+	name,
+	code,
+	city,
+	country string,
+	alias,
+	regions []string,
+	coordinates []float64,
+	province,
+	timezone string,
+	unlocs []string) (*Port, error) {
 	if id == "" {
 		return nil, fmt.Errorf("%w: port id is required", ErrRequired)
 	}
