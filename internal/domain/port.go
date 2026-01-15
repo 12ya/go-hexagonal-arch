@@ -17,6 +17,19 @@ type Port struct {
 }
 
 func NewPort(id, name, code, city, country string, alias, regions []string, coordinates []float64, province, timezone string, unlocs []string) (*Port, error) {
+	if id == "" {
+		return nil, fmt.Errorf("%w: port id is required", ErrRequired)
+	}
+	if name == "" {
+		return nil, fmt.Errorf("%w: port name is required", ErrRequired)
+	}
+	if city == "" {
+		return nil, fmt.Errorf("%w: port city is required", ErrRequired)
+	}
+	if country == "" {
+		return nil, fmt.Errorf("%w: port country is required", ErrRequired)
+	}
+
 	return &Port{
 		id:          id,
 		name:        name,
