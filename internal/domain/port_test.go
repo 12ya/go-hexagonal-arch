@@ -25,4 +25,21 @@ func TestNewPort(t *testing.T) {
 		require.Equal(t, portCity, port.City())
 		require.Equal(t, portCountry, port.Country())
 	})
+
+	t.Run("missing port ID", func(t *testing.T) {
+		_, err := NewPort("", portName, portCode, portCity, portCountry, nil, nil, nil, "", "", nil)
+		require.Error(t, err)
+	})
+	t.Run("missing port name", func(t *testing.T) {
+		_, err := NewPort(portID, "", portCode, portCity, portCountry, nil, nil, nil, "", "", nil)
+		require.Error(t, err)
+	})
+	t.Run("missing port city", func(t *testing.T) {
+		_, err := NewPort(portID, portName, portCode, "", portCountry, nil, nil, nil, "", "", nil)
+		require.Error(t, err)
+	})
+	t.Run("missing port country", func(t *testing.T) {
+		_, err := NewPort(portID, portName, portCode, portCity, "", nil, nil, nil, "", "", nil)
+		require.Error(t, err)
+	})
 }
