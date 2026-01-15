@@ -35,3 +35,26 @@ func (s *Store) GetPort(ctx context.Context, id string) (*domain.Port, error) {
 
 	return port, nil
 }
+
+func (s *Store) Upsert(ctx context.Context, p *domain.Port) error {
+	if p == nil {
+		return domain.ErrNil
+	}
+
+	storePort, err := domainPortToStore(p)
+	if err != nil {
+		return fmt.Errorf("error converting domain port to store one: %w", err)
+	}
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if _, exists := s.data[storePort.ID]; exists {
+		return s.updatePort(ctx, storePort)
+	} else {
+		return s.createPort(ctx, storePort)
+	}
+}
+
+func (s *Store) createPort(ctx context.Context, port *Port) error
+func (s *Store) updatePort(ctx context.Context, port *Port) error
