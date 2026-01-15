@@ -50,11 +50,45 @@ func (s *Store) Upsert(ctx context.Context, p *domain.Port) error {
 	defer s.mu.Unlock()
 
 	if _, exists := s.data[storePort.ID]; exists {
-		return s.updatePort(ctx, storePort)
+		s.updatePort(storePort.ID, storePort.toUpdate())
 	} else {
-		return s.createPort(ctx, storePort)
+		s.data[storePort.ID] = storePort
 	}
+	return nil
 }
 
-func (s *Store) createPort(ctx context.Context, port *Port) error
-func (s *Store) updatePort(ctx context.Context, port *Port) error
+func (s *Store) updatePort(id string, update *domain.PortUpdate) {
+	storePort := s.data[id]
+	// updated := storePort.Copy()
+
+	if update.Name != nil {
+		storePort.Name = *update.Name
+	}
+	if update.Code != nil {
+		storePort.Code = *update.Code
+	}
+	if update.City != nil {
+		storePort.City = *update.City
+	}
+	if update.Country != nil {
+		storePort.Country = *update.Country
+	}
+	if update.Alias != nil {
+		storePort.Alias = append([]string(nil), *update.Alias...)
+	}
+	if update.Regions != nil {
+		storePort.Regions = append([]string(nil), *update.Regions...)
+	}
+	if update.Coordinates != nil {
+		storePort.Coordinates = append([]float64(nil), *update.Coordinates...)
+	}
+	if update.Province != nil {
+		storePort.Province = *update.Province
+	}
+	if update.Timezone != nil {
+		storePort.Timezone = *update.Timezone
+	}
+	if update.Unlocs != nil {
+		storePort.Unlocs = append([]string(nil), *update.Unlocs...)
+	}
+}
