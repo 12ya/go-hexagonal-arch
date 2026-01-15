@@ -1,5 +1,7 @@
 package domain
 
+import "fmt"
+
 type Port struct {
 	id          string
 	name        string
@@ -14,12 +16,37 @@ type Port struct {
 	unlocs      []string
 }
 
+func NewPort(id, name, code, city, country string, alias, regions []string, coordinates []float64, province, timezone string, unlocs []string) (*Port, error) {
+	return &Port{
+		id:          id,
+		name:        name,
+		code:        code,
+		city:        city,
+		country:     country,
+		alias:       alias,
+		regions:     regions,
+		coordinates: coordinates,
+		province:    province,
+		timezone:    timezone,
+		unlocs:      unlocs,
+	}, nil
+}
+
 func (p *Port) ID() string {
 	return p.id
 }
 
 func (p *Port) Name() string {
 	return p.name
+}
+
+func (p *Port) SetName(name string) error {
+	if name == "" {
+		return fmt.Errorf("%w: port name is required", ErrRequired)
+	}
+
+	p.name = name
+	return nil
 }
 
 func (p *Port) Code() string {
