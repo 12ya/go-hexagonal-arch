@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -31,7 +30,20 @@ func (h *HttpServer) GetPort(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(port)
+	response := Port{
+		ID:          port.ID(),
+		Name:        port.Name(),
+		City:        port.City(),
+		Country:     port.Country(),
+		Alias:       port.Alias(),
+		Regions:     port.Regions(),
+		Coordinates: port.Coordinates(),
+		Province:    port.Province(),
+		Timezone:    port.Timezone(),
+		Unlocs:      port.Unlocs(),
+	}
+
+	httpRespond(response, w, r)
 }
 
 func httpRespondWithError(err error, slug string, w http.ResponseWriter, r *http.Request, message string, status int) {
@@ -46,4 +58,10 @@ func httpRespondWithError(err error, slug string, w http.ResponseWriter, r *http
 type ErrorResponse struct {
 	Slug       string `json:"slug"`
 	httpStatus int
+}
+
+func httpRespond(data any, w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(data)
 }
