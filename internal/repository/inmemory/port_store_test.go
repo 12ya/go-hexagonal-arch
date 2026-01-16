@@ -10,9 +10,11 @@ import (
 )
 
 func TestPortStore_Upsert(t *testing.T) {
-	store := NewStore()
+	t.Parallel()
 
-	t.Run("create prot", func(t *testing.T) {
+	store := NewStore()
+	t.Run("create port", func(t *testing.T) {
+		t.Parallel()
 		randomPort := newRandomDomainPort(t)
 		err := store.Upsert(context.Background(), randomPort)
 		require.NoError(t, err)
@@ -21,6 +23,29 @@ func TestPortStore_Upsert(t *testing.T) {
 		require.NoError(t, err)
 
 		require.Equal(t, port, randomPort)
+	})
+
+	t.Run("update port", func(t *testing.T) {
+		t.Parallel()
+		randomPort := newRandomDomainPort(t)
+		err := store.Upsert(context.Background(), randomPort)
+		require.NoError(t, err)
+
+		beforeUpdate, err := store.GetPort(context.Background(), randomPort.ID())
+		require.NoError(t, err)
+
+		require.Equal(t, beforeUpdate, randomPort)
+
+		err = randomPort.SetName("updated name")
+		require.NoError(t, err)
+
+		err = store.Upsert(context.Background(), randomPort)
+		require.NoError(t, err)
+
+		updatedPort, err := store.GetPort(context.Background(), randomPort.ID())
+		require.NoError(t, err)
+
+		require.NotEqual(t, beforeUpdate.Name(), updatedPort.Name())
 	})
 }
 
