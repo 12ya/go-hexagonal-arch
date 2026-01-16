@@ -47,6 +47,12 @@ func TestPortStore_Upsert(t *testing.T) {
 
 		require.NotEqual(t, beforeUpdate.Name(), updatedPort.Name())
 	})
+
+	t.Run("nil port", func(t *testing.T) {
+		t.Parallel()
+		err := store.Upsert(context.Background(), nil)
+		require.ErrorIs(t, err, domain.ErrNil)
+	})
 }
 
 func newRandomDomainPort(t *testing.T) *domain.Port {
