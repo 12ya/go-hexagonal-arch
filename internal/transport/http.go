@@ -28,10 +28,10 @@ func (h *HttpServer) GetPort(w http.ResponseWriter, r *http.Request) {
 	port, err := h.service.GetPort(r.Context(), r.URL.Query().Get("id"))
 	if err != nil {
 		if errors.Is(err, domain.ErrNotFound) {
-			server.HttpRespondWithError(err, "port-not-found", w, r, "not found", http.StatusNotFound)
+			server.NotFound("port-not-found", err, w, r)
 			return
 		}
-		server.HttpRespondWithError(err, "", w, r, "internal server error", http.StatusInternalServerError)
+		server.RespondWithError(err, w, r)
 		return
 	}
 
@@ -80,18 +80,18 @@ func (h *HttpServer) UploadPorts(w http.ResponseWriter, r *http.Request) {
 			return
 		case err := <-errChan:
 			log.Printf("Error occured while parsing port json: %+v", err)
-			server.HttpRespondWithError(err, "invalid-json", w, r, "Invalid json", http.StatusBadRequest)
+			server.BadRequest("invalid-json", err, w, r)
 			return
 		case port := <-portChan:
 			portCounter++
 			log.Printf("[%d] received port: %+v", portCounter, port)
 			p, err := httpPortToDomain(&port)
 			if err != nil {
-				server.HttpRespondWithError(err, "port-to-domain", w, r, "Error parsing Port Http -> Domain", http.StatusBadRequest)
+				server.BadRequest("port-to-domain", err, w, r)
 				return
 			}
 			if err := h.service.Upsert(r.Context(), p); err != nil {
-				server.HttpRespondWithError(err, "upsert-error", w, r, "Error upserting in UploadPorts", http.StatusBadRequest)
+				server.RespondWithError(err, w, r)
 				return
 			}
 		}

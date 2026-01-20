@@ -8,7 +8,7 @@ import (
 	"github.com/12ya/go-hexagonal-arch/internal/common/errors"
 )
 
-func HttpRespondWithError(err error, slug string, w http.ResponseWriter, r *http.Request, message string, status int) {
+func httpRespondWithError(err error, slug string, w http.ResponseWriter, r *http.Request, message string, status int) {
 	log.Printf("error: %s, slug: %s, message: %s, status: %d, path: %s, method: %s",
 		err, slug, message, status, r.URL.Path, r.Method)
 
@@ -23,11 +23,19 @@ type ErrorResponse struct {
 }
 
 func InternalError(slug string, err error, w http.ResponseWriter, r *http.Request) {
-	HttpRespondWithError(err, slug, w, r, "Internal server error", http.StatusInternalServerError)
+	httpRespondWithError(err, slug, w, r, "Internal server error", http.StatusInternalServerError)
 }
 
 func Unauthorized(slug string, err error, w http.ResponseWriter, r *http.Request) {
-	HttpRespondWithError(err, slug, w, r, "Unauthorized", http.StatusUnauthorized)
+	httpRespondWithError(err, slug, w, r, "Unauthorized", http.StatusUnauthorized)
+}
+
+func BadRequest(slug string, err error, w http.ResponseWriter, r *http.Request) {
+	httpRespondWithError(err, slug, w, r, "Bad Request", http.StatusBadRequest)
+}
+
+func NotFound(slug string, err error, w http.ResponseWriter, r *http.Request) {
+	httpRespondWithError(err, slug, w, r, "Not Found", http.StatusBadRequest)
 }
 
 func RespondWithError(err error, w http.ResponseWriter, r *http.Request) {
