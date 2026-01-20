@@ -36,6 +36,13 @@ func (s *Store) GetPort(ctx context.Context, id string) (*domain.Port, error) {
 	return port, nil
 }
 
+func (s *Store) CountPorts(context.Context) (int, error) {
+	s.mu.Lock()
+	defer s.mu.RUnlock()
+
+	return len(s.data), nil
+}
+
 func (s *Store) Upsert(ctx context.Context, p *domain.Port) error {
 	if p == nil {
 		return domain.ErrNil
