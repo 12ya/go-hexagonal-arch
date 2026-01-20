@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/12ya/go-hexagonal-arch/internal/common/server"
 	"github.com/12ya/go-hexagonal-arch/internal/domain"
 )
 
@@ -48,7 +49,7 @@ func (h *HttpServer) GetPort(w http.ResponseWriter, r *http.Request) {
 		Unlocs:      port.Unlocs(),
 	}
 
-	httpRespond(response, w, r)
+	server.RespondOK(response, w, r)
 }
 
 // reads ports from JSON and creates/updates them in DB
@@ -76,7 +77,7 @@ func (h *HttpServer) UploadPorts(w http.ResponseWriter, r *http.Request) {
 			return
 		case <-doneChan:
 			log.Printf("Finished reading ports")
-			httpRespond(map[string]int{"total_ports": portCounter}, w, r)
+			server.RespondOK(map[string]int{"total_ports": portCounter}, w, r)
 			return
 		case err := <-errChan:
 			log.Printf("Error occured while parsing port json: %+v", err)
@@ -110,10 +111,4 @@ func httpRespondWithError(err error, slug string, w http.ResponseWriter, r *http
 type ErrorResponse struct {
 	Slug       string `json:"slug"`
 	httpStatus int
-}
-
-func httpRespond(data any, w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
 }
