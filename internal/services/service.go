@@ -9,6 +9,7 @@ import (
 type PortRepository interface {
 	Upsert(context.Context, *domain.Port) error
 	GetPort(ctx context.Context, id string) (*domain.Port, error)
+	CountPorts(context.Context) (int, error)
 }
 
 type PortService struct {
@@ -25,4 +26,8 @@ func (ps *PortService) GetPort(ctx context.Context, id string) (*domain.Port, er
 
 func (ps *PortService) Upsert(ctx context.Context, port *domain.Port) error {
 	return ps.repo.Upsert(ctx, port)
+}
+
+func (ps *PortService) CountPorts(ctx context.Context) (int, error) {
+	return ps.repo.CountPorts(ctx)
 }
