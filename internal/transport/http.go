@@ -2,7 +2,6 @@ package transport
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
@@ -29,10 +28,10 @@ func (h *HttpServer) GetPort(w http.ResponseWriter, r *http.Request) {
 	port, err := h.service.GetPort(r.Context(), r.URL.Query().Get("id"))
 	if err != nil {
 		if errors.Is(err, domain.ErrNotFound) {
-			httpRespondWithError(err, "port-not-found", w, r, "not found", http.StatusNotFound)
+			server.HttpRespondWithError(err, "port-not-found", w, r, "not found", http.StatusNotFound)
 			return
 		}
-		httpRespondWithError(err, "", w, r, "internal server error", http.StatusInternalServerError)
+		server.HttpRespondWithError(err, "", w, r, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -81,34 +80,20 @@ func (h *HttpServer) UploadPorts(w http.ResponseWriter, r *http.Request) {
 			return
 		case err := <-errChan:
 			log.Printf("Error occured while parsing port json: %+v", err)
-			httpRespondWithError(err, "invalid-json", w, r, "Invalid json", http.StatusBadRequest)
+			server.HttpRespondWithError(err, "invalid-json", w, r, "Invalid json", http.StatusBadRequest)
 			return
 		case port := <-portChan:
 			portCounter++
 			log.Printf("[%d] received port: %+v", portCounter, port)
 			p, err := httpPortToDomain(&port)
 			if err != nil {
-				httpRespondWithError(err, "port-to-domain", w, r, "Error parsing Port Http -> Domain", http.StatusBadRequest)
+				server.HttpRespondWithError(err, "port-to-domain", w, r, "Error parsing Port Http -> Domain", http.StatusBadRequest)
 				return
 			}
 			if err := h.service.Upsert(r.Context(), p); err != nil {
-				httpRespondWithError(err, "upsert-error", w, r, "Error upserting in UploadPorts", http.StatusBadRequest)
+				server.HttpRespondWithError(err, "upsert-error", w, r, "Error upserting in UploadPorts", http.StatusBadRequest)
 				return
 			}
 		}
 	}
-}
-
-func httpRespondWithError(err error, slug string, w http.ResponseWriter, r *http.Request, message string, status int) {
-	log.Printf("error: %s, slug: %s, message: %s, status: %d, path: %s, method: %s",
-		err, slug, message, status, r.URL.Path, r.Method)
-
-	w.Header().Add("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(ErrorResponse{slug, status})
-}
-
-type ErrorResponse struct {
-	Slug       string `json:"slug"`
-	httpStatus int
 }
