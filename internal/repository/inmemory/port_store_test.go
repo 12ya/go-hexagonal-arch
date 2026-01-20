@@ -12,7 +12,7 @@ import (
 func TestPortStore_Upsert(t *testing.T) {
 	t.Parallel()
 
-	store := NewStore()
+	store := NewPortStore()
 	t.Run("create port", func(t *testing.T) {
 		t.Parallel()
 		randomPort := newRandomDomainPort(t)

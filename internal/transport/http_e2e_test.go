@@ -26,7 +26,7 @@ type HttpTestSuite struct {
 func NewHttpTestSuite() *HttpTestSuite {
 	suite := &HttpTestSuite{}
 
-	portStoreRepo := inmemory.NewStore()
+	portStoreRepo := inmemory.NewPortStore()
 
 	suite.portService = services.NewPortService(portStoreRepo)
 

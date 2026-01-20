@@ -13,7 +13,7 @@ type Store struct {
 	mu   sync.RWMutex
 }
 
-func NewStore() *Store {
+func NewPortStore() *Store {
 	return &Store{
 		data: make(map[string]*Port),
 	}
