@@ -37,7 +37,7 @@ func (s *Store) GetPort(ctx context.Context, id string) (*domain.Port, error) {
 }
 
 func (s *Store) CountPorts(context.Context) (int, error) {
-	s.mu.Lock()
+	s.mu.RLock()
 	defer s.mu.RUnlock()
 
 	return len(s.data), nil
