@@ -48,6 +48,10 @@ func RespondWithError(err error, w http.ResponseWriter, r *http.Request) {
 	switch slugError.ErrorType() {
 	case errors.ErrorTypeAuthorization:
 		Unauthorized(slugError.Slug(), slugError, w, r)
+	case errors.ErrorTypeIncorrectInput:
+		BadRequest(slugError.Slug(), slugError, w, r)
+	case errors.ErrorTypeNotFound:
+		NotFound(slugError.Slug(), slugError, w, r)
 	default:
 		InternalError(slugError.Slug(), slugError, w, r)
 	}
