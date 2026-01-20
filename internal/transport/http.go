@@ -51,6 +51,16 @@ func (h *HttpServer) GetPort(w http.ResponseWriter, r *http.Request) {
 	server.RespondOK(response, w, r)
 }
 
+func (h *HttpServer) CountPorts(w http.ResponseWriter, r *http.Request) {
+	total, err := h.service.CountPorts(r.Context())
+	if err != nil {
+		server.RespondWithError(err, w, r)
+		return
+	}
+
+	server.RespondOK(map[string]int{"total": total}, w, r)
+}
+
 // reads ports from JSON and creates/updates them in DB
 func (h *HttpServer) UploadPorts(w http.ResponseWriter, r *http.Request) {
 	log.Println("Uploading ports")
