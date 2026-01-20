@@ -127,11 +127,11 @@ func readPorts(ctx context.Context, r io.Reader, portChan chan Port) error {
 	// Read the opening delimiter
 	token, err := decoder.Token()
 	if err != nil {
-		return fmt.Errorf("Failed to read the opening delimiter: %w", err)
+		return fmt.Errorf("failed to read the opening delimiter: %w", err)
 	}
 
 	if token != json.Delim('{') {
-		return fmt.Errorf("Expected {, got %v", token)
+		return fmt.Errorf("expected {, got %v", token)
 	}
 
 	for decoder.More() {
@@ -141,17 +141,17 @@ func readPorts(ctx context.Context, r io.Reader, portChan chan Port) error {
 
 		token, err := decoder.Token()
 		if err != nil {
-			return fmt.Errorf("Expected string, got %v", token)
+			return fmt.Errorf("expected string, got %v", token)
 		}
 
 		portID, ok := token.(string)
 		if !ok {
-			return fmt.Errorf("Expected string, got %v", token)
+			return fmt.Errorf("expected string, got %v", token)
 		}
 
 		var port Port
 		if err := decoder.Decode(&port); err != nil {
-			return fmt.Errorf("Failed to decode port: %w", err)
+			return fmt.Errorf("failed to decode port: %w", err)
 		}
 
 		port.ID = portID

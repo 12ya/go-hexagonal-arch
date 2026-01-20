@@ -1,8 +1,6 @@
 package transport
 
-type ErrorType struct {
-	t string
-}
+type ErrorType string
 
 type SlugError struct {
 	error     string
